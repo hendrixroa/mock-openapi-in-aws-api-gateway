@@ -1,0 +1,35 @@
+{
+  "name": "mock-openapi-in-aws-api-gateway",
+  "version": "1.0.0",
+  "description": "This is another openapi (a.k.a swagger) mock server builder file to take advantage of AWS API Gateway free tier.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hendrixroa/cognito-defender.git"
+  },
+  "keywords": [
+    "aws",
+    "apigateway",
+    "mock",
+    "server",
+    "openapi",
+    "swagger"
+  ],
+  "author": "Hendrix Roa <hendrix.alex87@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hendrixroa/mock-openapi-in-aws-api-gateway/issues"
+  },
+  "homepage": "https://github.com/hendrixroa/mock-openapi-in-aws-api-gateway#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.31",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@apidevtools/swagger-parser": "^10.0.2"
+  }
+}

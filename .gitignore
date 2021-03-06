@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+.idea/
+
+*.js
+*.js.map
+*.d.ts
+
+build/
