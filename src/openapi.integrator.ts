@@ -47,17 +47,17 @@ export class OpenapiIntegrator {
         const dataFromSchema = await jsf.resolve(schema);
 
         objResponses.responses = {
-          [response]: {
+           "default": {
             "statusCode": response,
             "responseTemplates": {
-              "application/json": dataFromSchema
+              "application/json": JSON.stringify(dataFromSchema),
             }
           }
         }
       }
     }
     return {
-      "responses": objResponses,
+      ...objResponses,
       "requestTemplates": {
         "application/json": "{\"statusCode\": 200}"
       },
