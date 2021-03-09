@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hendrixroa/cognito-defender.git"
+    "url": "git+https://github.com/hendrixroa/mock-openapi-in-aws-api-gateway.git"
   },
   "keywords": [
     "aws",
