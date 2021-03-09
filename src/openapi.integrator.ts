@@ -1,6 +1,7 @@
 import * as SwaggerParser from "@apidevtools/swagger-parser";
 import * as jsf from 'json-schema-faker';
 import * as faker from 'faker';
+import { writeFileSync } from 'fs';
 
 jsf.option({
   alwaysFakeOptionals: true,
@@ -19,7 +20,7 @@ export class OpenapiIntegrator {
     this.apiSpec = apiSpec;
   }
 
-  public async addIntegration() {
+  public async addIntegration(): Promise<any> {
     await this.validateOpenapiSpec();
     let apiSpecMutable: any = this.apiSpec;
 
@@ -27,12 +28,14 @@ export class OpenapiIntegrator {
       for (const method in apiSpecMutable.paths[path]) {
         const responseSchema = apiSpecMutable.paths[path][method].responses;
         const objIntegration = await this.addIntegrationObject(responseSchema);
-        console.log('path: ', path);
-        console.log('method: ', method);
-        console.log('objInt: ', JSON.stringify(objIntegration));
+        apiSpecMutable.paths[path][method][
+          'x-amazon-apigateway-integration'
+          ] = objIntegration;
+        apiSpecMutable.paths[path].options = this.addIntegrationCORS();
       }
     }
-
+    writeFileSync('out.json', JSON.stringify(apiSpecMutable));
+    return apiSpecMutable;
   }
 
   private async addIntegrationObject(responsesSchema: any) {
@@ -60,6 +63,57 @@ export class OpenapiIntegrator {
       },
       "passthroughBehavior": "when_no_match",
       "type": "mock"
+    };
+  }
+
+  private addIntegrationCORS() {
+    return {
+      description: 'Enable CORS by returning correct headers\n',
+      responses: {
+        200: {
+          description: 'Default response for CORS method',
+          headers: {
+            'Access-Control-Allow-Headers': {
+              schema: {
+                type: 'string',
+              },
+            },
+            'Access-Control-Allow-Methods': {
+              schema: {
+                type: 'string',
+              },
+            },
+            'Access-Control-Allow-Origin': {
+              schema: {
+                type: 'string',
+              },
+            },
+          },
+          content: {},
+        },
+      },
+      summary: 'CORS support',
+      tags: ['CORS'],
+      'x-amazon-apigateway-integration': {
+        requestTemplates: {
+          'application/json': '{\n  "statusCode" : 200\n}\n',
+        },
+        responses: {
+          default: {
+            responseParameters: {
+              'method.response.header.Access-Control-Allow-Headers':
+                "'*'",
+              'method.response.header.Access-Control-Allow-Methods': "'*'",
+              'method.response.header.Access-Control-Allow-Origin': "'*'",
+            },
+            responseTemplates: {
+              'application/json': '{}\n',
+            },
+            statusCode: '200',
+          },
+        },
+        type: 'mock',
+      },
     };
   }
 
