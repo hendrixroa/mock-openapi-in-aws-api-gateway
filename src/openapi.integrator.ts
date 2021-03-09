@@ -1,7 +1,6 @@
 import * as SwaggerParser from "@apidevtools/swagger-parser";
 import * as jsf from 'json-schema-faker';
 import * as faker from 'faker';
-import { writeFileSync } from 'fs';
 
 jsf.option({
   alwaysFakeOptionals: true,
@@ -34,7 +33,6 @@ export class OpenapiIntegrator {
         apiSpecMutable.paths[path].options = this.addIntegrationCORS();
       }
     }
-    writeFileSync('out.json', JSON.stringify(apiSpecMutable));
     return apiSpecMutable;
   }
 
