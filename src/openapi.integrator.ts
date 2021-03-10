@@ -31,26 +31,34 @@ export class OpenapiIntegrator {
           'x-amazon-apigateway-integration'
           ] = objIntegration;
         apiSpecMutable.paths[path].options = this.addIntegrationCORS();
+        apiSpecMutable.paths[path][method][
+          'x-amazon-apigateway-request-validator'
+          ] = "all";
       }
     }
+    apiSpecMutable['x-amazon-apigateway-request-validators'] = this.getValidators();
+    apiSpecMutable['x-amazon-apigateway-gateway-responses'] = this.getResponses();
     return apiSpecMutable;
   }
 
   private async addIntegrationObject(responsesSchema: any) {
     let objResponses: any = {};
     for(const response in responsesSchema) {
-      if(responsesSchema[response].hasOwnProperty('content')) {
-        const schema = responsesSchema[response].content['application/json'].schema;
-        const dataFromSchema = await jsf.resolve(schema);
+      const schema = responsesSchema[response].content['application/json']?.schema;
+      let dataFromSchema = schema ? await jsf.resolve(schema) : undefined;
 
-        objResponses.responses = {
-           "default": {
-            "statusCode": response,
-            "responseTemplates": {
-              "application/json": JSON.stringify(dataFromSchema),
-            }
-          }
+      objResponses.responses = {
+        "default": {
+          "statusCode": response,
         }
+      };
+      if(dataFromSchema) {
+        objResponses.responses.default = {
+          ...objResponses.responses.default,
+          "responseTemplates": {
+            "application/json": JSON.stringify(dataFromSchema),
+          }
+        };
       }
     }
     return {
@@ -60,6 +68,36 @@ export class OpenapiIntegrator {
       },
       "passthroughBehavior": "when_no_match",
       "type": "mock"
+    };
+  }
+
+  private getValidators() {
+    return {
+      "all": {
+        "validateRequestBody": true,
+        "validateRequestParameters": true
+      },
+      "params-only": {
+        "validateRequestBody": false,
+        "validateRequestParameters": true
+      }
+    };
+  }
+
+  private getResponses() {
+    return {
+      "BAD_REQUEST_BODY": {
+        "statusCode": 400,
+        "responseTemplates": {
+          "application/json": "{\"message\": \"$context.error.validationErrorString\"}"
+        }
+      },
+      "BAD_REQUEST_PARAMETERS": {
+        "statusCode": 400,
+        "responseTemplates": {
+          "application/json": "{\"message\": \"$context.error.validationErrorString\"}"
+        }
+      }
     };
   }
 
