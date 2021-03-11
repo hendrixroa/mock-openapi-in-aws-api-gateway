@@ -91,14 +91,22 @@ export class OpenapiIntegrator {
     return {
       "BAD_REQUEST_BODY": {
         "statusCode": 400,
+        "responseParameters": {
+          "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+          "gatewayresponse.header.from-request-header" : "method.request.header.Accept"
+        },
         "responseTemplates": {
-          "application/json": "{\"message\": \"$context.error.validationErrorString\"}"
+          "application/json": "{\"message\":\"$context.error.validationErrorString\",\"errorType\":\"validation\"}"
         }
       },
       "BAD_REQUEST_PARAMETERS": {
         "statusCode": 400,
+        "responseParameters": {
+          "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+          "gatewayresponse.header.from-request-header" : "method.request.header.Accept"
+        },
         "responseTemplates": {
-          "application/json": "{\"message\": \"$context.error.validationErrorString\"}"
+          "application/json": "{\"message\":\"$context.error.validationErrorString\",\"errorType\":\"validation\"}"
         }
       }
     };
