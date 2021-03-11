@@ -1,6 +1,6 @@
 {
   "name": "mock-openapi-in-aws-api-gateway",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "This is another openapi (a.k.a swagger) mock server builder file to take advantage of AWS API Gateway free tier.",
   "main": "index.js",
   "scripts": {

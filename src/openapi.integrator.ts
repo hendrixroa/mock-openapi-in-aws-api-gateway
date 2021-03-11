@@ -45,7 +45,8 @@ export class OpenapiIntegrator {
     let objResponses: any = {};
     for(const response in responsesSchema) {
       const responseContent = responsesSchema[response]?.content;
-      const responseContentAppJson = responseContent['application/json'];
+      const responseContentAppJson = responseContent && responseContent.hasOwnProperty('application/json') ?
+        responseContent['application/json'] : undefined;
       const schema = responseContent && responseContentAppJson && responseContentAppJson?.schema;
       let dataFromSchema = schema ? await jsf.resolve(schema) : undefined;
 
