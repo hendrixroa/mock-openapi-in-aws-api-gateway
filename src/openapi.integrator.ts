@@ -1,4 +1,4 @@
-import * as SwaggerParser from "@apidevtools/swagger-parser";
+import * as SwaggerParser from '@apidevtools/swagger-parser';
 import * as jsf from 'json-schema-faker';
 import * as faker from 'faker';
 
@@ -44,7 +44,9 @@ export class OpenapiIntegrator {
   private async addIntegrationObject(responsesSchema: any) {
     let objResponses: any = {};
     for(const response in responsesSchema) {
-      const schema = responsesSchema[response].content['application/json']?.schema;
+      const responseContent = responsesSchema[response]?.content;
+      const responseContentAppJson = responseContent['application/json'];
+      const schema = responseContent && responseContentAppJson && responseContentAppJson?.schema;
       let dataFromSchema = schema ? await jsf.resolve(schema) : undefined;
 
       objResponses.responses = {

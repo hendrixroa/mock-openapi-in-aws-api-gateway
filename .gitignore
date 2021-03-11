@@ -109,4 +109,6 @@ dist
 *.js.map
 *.d.ts
 
+.DS_Store
+
 build/
